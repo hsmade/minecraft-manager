@@ -8,16 +8,24 @@ class App extends Component {
         this.state = {
             servers: [],
             enabledServers: 0,
+            search: "",
         };
+
+        this.handleSearch = this.handleSearch.bind(this);
+
     }
 
     async updateData() {
         const res = await fetch('/v1/servers');
         const data = await res.json();
-        const enabledServers = (Object.values(data.map(server => server.status.online?1:0)).reduce(function(a,b){return a+b}))
+        let enabledServers = 0
+        if (data.length > 0) {
+            enabledServers = (Object.values(data.map(server => server.status.online?1:0)).reduce(function(a,b){return a+b}))
+        }
         this.setState({servers: data, enabledServers: enabledServers})
         // console.log(this.state)
     }
+
     componentDidMount() {
         try {
             this.updateData();
@@ -27,12 +35,25 @@ class App extends Component {
         }
     }
 
+    handleSearch(event) {
+        this.setState({search: event.target.value});
+    }
+
     render() {
     let servers = this.state.servers.map(server => <ServerInfo server={server} enabledServers={this.state.enabledServers}/>)
+    if (this.state.search !== "") {
+        servers = Object.values(servers).filter(server => {
+            return server.props.server.motd.includes(this.state.search)
+        }
+    )
+    }
     return (
-        <table>
-            {servers}
-        </table>
+        <div>
+            Zoeken: <input type={"text"} name={"search"} onChange={this.handleSearch}/>
+            <table>
+                {servers}
+            </table>
+        </div>
     );
   }
 }
