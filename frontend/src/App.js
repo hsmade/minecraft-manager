@@ -37,15 +37,15 @@ class App extends Component {
     }
 
     setSearchQuery(event) {
-        this.setState({search: event.target.value.toLowerCase()});
+        this.setState({searchQuery: event.target.value.toLowerCase()});
     }
 
     render() {
         let serverList = this.state.servers
 
-        if (this.state.search !== "") {
+        if (this.state.searchQuery !== "") {
             serverList = serverList.filter(server => {
-                return server.motd.toLowerCase().includes(this.state.search)
+                return server.motd.toLowerCase().includes(this.state.searchQuery)
             })
         }
 
