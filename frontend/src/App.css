@@ -2,21 +2,20 @@ body {
     background-color: black;
     color: white;
 }
+
 tbody {
     width: 100%;
-}
-tbody.online {
-    background-color: darkgreen;
     color: white;
     display: table;
     border-bottom: 15px solid black;
 }
 
+tbody.online {
+    background-color: darkgreen;
+}
+
 tbody.offline {
     background-color: darkred;
-    color: white;
-    display: table;
-    border-bottom: 15px solid black;
 }
 
 td.spacer {

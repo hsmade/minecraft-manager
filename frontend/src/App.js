@@ -8,10 +8,10 @@ class App extends Component {
         this.state = {
             servers: [],
             enabledServers: 0,
-            search: "",
+            searchQuery: "",
         };
 
-        this.handleSearch = this.handleSearch.bind(this);
+        this.setSearchQuery = this.setSearchQuery.bind(this);
 
     }
 
@@ -36,65 +36,72 @@ class App extends Component {
         }
     }
 
-    handleSearch(event) {
-        this.setState({search: event.target.value});
+    setSearchQuery(event) {
+        this.setState({search: event.target.value.toLowerCase()});
     }
 
     render() {
-    let servers = this.state.servers.map(server => <ServerInfo server={server} enabledServers={this.state.enabledServers}/>)
-    if (this.state.search !== "") {
-        servers = Object.values(servers).filter(server => {
-            return server.props.server.motd.toLowerCase().includes(this.state.search.toLowerCase())
+        let serverList = this.state.servers
+
+        if (this.state.search !== "") {
+            serverList = serverList.filter(server => {
+                return server.motd.toLowerCase().includes(this.state.search)
+            })
         }
-    )
+
+        let servers = serverList.map(server => <ServerInfo server={server} enabledServers={this.state.enabledServers}/>)
+
+        return (
+            <div>
+                Zoeken: <input type={"text"} name={"search"} onChange={this.setSearchQuery}/>
+                <table>
+                    {servers}
+                </table>
+            </div>
+        );
     }
-    return (
-        <div>
-            Zoeken: <input type={"text"} name={"search"} onChange={this.handleSearch}/>
-            <table>
-                {servers}
-            </table>
-        </div>
-    );
-  }
 }
 
 class ServerInfo extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            wantedState: null,
+            wantedState: null, // does user want this server to be running?
         };
         this.setServerState = this.setServerState.bind(this);
     }
 
     setServerState() {
-        console.log("Setting", this.props.server.motd, "to", !this.props.server.status.online)
-        this.setState({wantedState: !this.props.server.status.online})
+        // console.log("Setting", this.props.server.motd, "to", !this.props.server.status.online)
+        this.setState({wantedState: !this.props.server.status.online}) // register users' wanted state for this server
+        let options = {}
         if (this.props.server.status.online) {
-            fetch('/v1/servers/'+this.props.server.id, {method: "DELETE"}).then(data => console.log("done", data))
+            options = {method: "DELETE"}
         } else {
-            fetch('/v1/servers/'+this.props.server.id, {method: "PUT"}).then(data => console.log("done", data))
+            options = {method: "PUT"}
         }
+        // do the call to the backend to set the server state
+        fetch('/v1/servers/'+this.props.server.id, options).then(data => console.log("done", data))
     }
 
     render() {
         // console.log(this.props)
         const className = this.props.server.status.online?"online":"offline"
-        let buttonText = this.props.server.status.online?"zet uit":"zet aan"
+        let buttonText = this.props.server.status.online?"zet uit":"zet aan" // disable:enable
         if (this.state.wantedState != null && this.state.wantedState !== this.props.server.status.online) {
-            buttonText = this.state.wantedState?"starten...":"stoppen..."
+            buttonText = this.state.wantedState?"starten...":"stoppen..." // starting:stopping
         }
         return(
             <tbody className={className}>
                 <tr>
                     <td rowSpan={3}>
-                        <img width={64} height={64} src={this.props.server.status.favicon}/>
+                        <img alt="server" width={64} height={64} src={this.props.server.status.favicon}/>
                     </td>
                     <td>{this.props.server.path}</td>
                     <td align={"right"}>poort: <b>{this.props.server.port}</b></td>
                     <td rowSpan={3} align={"right"}>
-                        <button disabled={this.props.enabledServers>1 && !this.props.server.status.online} onClick={this.setServerState}>{buttonText}</button>
+                        {/*disable the button if we have more than 1 server running, to save resources*/}
+                        <button disabled={this.props.enabledServers > 1 && !this.props.server.status.online} onClick={this.setServerState}>{buttonText}</button>
                     </td>
                 </tr>
                 <tr>
