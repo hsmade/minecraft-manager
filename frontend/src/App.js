@@ -17,10 +17,11 @@ class App extends Component {
 
     async updateData() {
         const res = await fetch('/v1/servers');
-        const data = await res.json();
+        let data = await res.json();
         let enabledServers = 0
         if (data.length > 0) {
             enabledServers = (Object.values(data.map(server => server.status.online?1:0)).reduce(function(a,b){return a+b}))
+            data = data.sort((a, b) => (a.port > b.port)?1:-1)
         }
         this.setState({servers: data, enabledServers: enabledServers})
         // console.log(this.state)
