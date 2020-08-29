@@ -44,7 +44,7 @@ class App extends Component {
     let servers = this.state.servers.map(server => <ServerInfo server={server} enabledServers={this.state.enabledServers}/>)
     if (this.state.search !== "") {
         servers = Object.values(servers).filter(server => {
-            return server.props.server.motd.includes(this.state.search)
+            return server.props.server.motd.toLowerCase().includes(this.state.search.toLowerCase())
         }
     )
     }
