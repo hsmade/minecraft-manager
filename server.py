@@ -28,30 +28,30 @@ def static_files(path):
 @app.route('/v1/servers/', methods=["GET"])
 def list_servers():
     servers = Servers(app.config["PATH"]).list()
-    return jsonify([server.toJson() for server in servers])
+    return jsonify([server.to_json() for server in servers])
 
 
-@app.route('/v1/servers/<id>', methods=["GET"])
-def get_server(id):
-    server = Servers(app.config["PATH"]).get(id)
+@app.route('/v1/servers/<server_id>', methods=["GET"])
+def get_server(server_id):
+    server = Servers(app.config["PATH"]).get(server_id)
     if server:
-        return jsonify(server.toJson())
+        return jsonify(server.to_json())
     else:
         return "", 404
 
 
-@app.route('/v1/servers/<id>', methods=["PUT"])
-def start_server(id):
-    server = Servers(app.config["PATH"]).get(id)
+@app.route('/v1/servers/<server_id>', methods=["PUT"])
+def start_server(server_id):
+    server = Servers(app.config["PATH"]).get(server_id)
     if server:
         return jsonify(server.start())
     else:
         return "", 404
 
 
-@app.route('/v1/servers/<id>', methods=["DELETE"])
-def stop_server(id):
-    server = Servers(app.config["PATH"]).get(id)
+@app.route('/v1/servers/<server_id>', methods=["DELETE"])
+def stop_server(server_id):
+    server = Servers(app.config["PATH"]).get(server_id)
     if server:
         return jsonify(server.stop())
     else:
@@ -128,14 +128,15 @@ class Server:
             try:
                 for conns in proc.connections(kind='inet'):
                     if conns.laddr.port == self.port:
-                        logging.warning("Shutting down %s on port %d with pid %d and name %s", self.motd, self.port, proc.pid, proc.name())
+                        logging.warning("Shutting down %s on port %d with pid %d and name %s",
+                                        self.motd, self.port, proc.pid, proc.name())
                         proc.send_signal(SIGTERM)
                         return True
-            except:
-                pass
+            except Exception as e:
+                logging.debug(e)
         return False
 
-    def toJson(self):
+    def to_json(self):
         return {
             "id": self.id,
             "path": self.path,
@@ -153,10 +154,10 @@ class Servers:
         files = glob.glob(self.path + '/.minecraft*/server.properties', recursive=True)
         return [self.create_server(file) for file in files]
 
-    def get(self, sserver_id):
+    def get(self, server_id):
         servers = self.list()
         for server in servers:
-            if server.id == sserver_id:
+            if server.id == server_id:
                 return server
         return None
 
