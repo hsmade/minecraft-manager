@@ -20,6 +20,7 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: '14'
+      - run: npm install yarn
       - run: cd frontend && yarn build
       - run: rsync -av frontend/build/* static/
       - run: rsync -av static/static/* static/
