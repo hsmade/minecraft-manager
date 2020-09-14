@@ -10,14 +10,19 @@ on:
   pull_request:
     branches: [ master ]
 jobs:
-  push_to_registry:
-    name: Push Docker image to Docker Hub
+  build:
+    name: Build and Push Docker image to Docker Hub
     runs-on: ubuntu-latest
     steps:
       - name: Check out the repo
         uses: actions/checkout@v2
       - name: build frontend
-        run:  make build_frontend  
+        uses: actions/setup-node@v1
+        with:
+          node-version: '14'
+      - run: cd frontend && yarn build
+      - run: rsync -av frontend/build/* static/
+      - run: rsync -av static/static/* static/
       - name: Push to Docker Hub
         uses: docker/build-push-action@v1
         with:
