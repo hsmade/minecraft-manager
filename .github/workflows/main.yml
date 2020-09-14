@@ -16,6 +16,8 @@ jobs:
     steps:
       - name: Check out the repo
         uses: actions/checkout@v2
+      - name: build frontend
+        run:  make build_frontend  
       - name: Push to Docker Hub
         uses: docker/build-push-action@v1
         with:
