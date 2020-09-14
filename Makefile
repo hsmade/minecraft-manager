@@ -2,7 +2,7 @@ build: build_frontend
 	docker build -t minecraft-manager .
 
 build_frontend: frontend_build_image
-	cd frontend && docker run -ti -v $PWD:/app -w /app minecraft-manager-build yarn build && cd -
+	cd frontend && docker run -v $PWD:/app -w /app minecraft-manager-build yarn build && cd -
 	rsync -av frontend/build/* static/
 	rsync -av static/static/* static/
 
