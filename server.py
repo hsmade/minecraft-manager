@@ -77,7 +77,7 @@ class Server:
             "online": False,
         }
         try:
-            server = MinecraftServer.lookup("localhost:"+str(self.port))
+            server = MinecraftServer.lookup(os.environ.get("SERVER_IP", "localhost") + ":" + str(self.port))
             status = server.status()
             players = None
             if status.players.sample is not None:
