@@ -15,3 +15,4 @@ The app will not allow more than 2 servers to run at the same time, to save reso
     
 The software expects that `MINECRAFT_ROOT` contains directories with minecraft servers in them. The directories should
 match the name `.minecraft*`.
+You can set `SERVER_IP` to override the IP for the server that runs the minecraft servers (defaults to localhost).
