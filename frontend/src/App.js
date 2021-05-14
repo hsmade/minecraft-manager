@@ -16,7 +16,7 @@ class App extends Component {
     }
 
     async updateData() {
-        const res = await fetch('//v1/servers');
+        const res = await fetch('/v1/servers');
         let data = await res.json();
         let enabledServers = 0
         if (data.length > 0) {
@@ -81,7 +81,7 @@ class ServerInfo extends Component {
             options = {method: "PUT"}
         }
         // do the call to the backend to set the server state
-        fetch('//v1/servers/'+this.props.server.id, options).then(data => console.log("done", data))
+        fetch('/v1/servers/'+this.props.server.id, options).then(data => console.log("done", data))
     }
 
     render() {
