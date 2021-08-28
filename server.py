@@ -115,7 +115,7 @@ class Server:
     def start(self):
         p = Popen([
             "/usr/bin/screen",
-            "-S",
+            "-d", "-m", "-S",
             self.motd,
             "./server.sh",
             "&"
