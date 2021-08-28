@@ -120,7 +120,7 @@ class Server:
             "./server.sh",
             "&"
         ], cwd=os.path.dirname(self.path))
-        logging.info("Started server %s on port %d: %d", self.motd, self.port, p.returncode)
+        logging.info("Started server %s on port %d: %s", self.motd, self.port, p.returncode)
         return p.returncode
 
     def stop(self):
