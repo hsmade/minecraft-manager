@@ -17,7 +17,7 @@ jobs:
       - name: Check out the repo
         uses: actions/checkout@v2
       - name: build frontend
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v3
         with:
           node-version: '14'
       - run: cd frontend && npm install && yarn build
