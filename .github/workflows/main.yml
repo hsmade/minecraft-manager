@@ -24,7 +24,7 @@ jobs:
       - run: rsync -av frontend/build/* static/
       - run: rsync -av static/static/* static/
       - name: Push to Docker Hub
-        uses: docker/build-push-action@v2
+        uses: docker/build-push-action@v4
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
