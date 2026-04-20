@@ -1,4 +1,4 @@
 Flask==2.0.2
 psutil==5.9.0
-mcstatus==9.0.3
+mcstatus==13.1.0
 nbt==1.5.1
