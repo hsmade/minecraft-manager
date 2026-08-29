@@ -19,7 +19,7 @@ jobs:
       - name: build frontend
         uses: actions/setup-node@v3
         with:
-          node-version: '14'
+          node-version: '24'
       - run: cd frontend && npm install && yarn build
       - run: rsync -av frontend/build/* static/
       - run: rsync -av static/static/* static/
